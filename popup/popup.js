@@ -261,6 +261,10 @@ async function handleSessionEnd(session) {
   $('sum-blocks').textContent   = blocks;
   $('sum-score').textContent    = score + '%';
 
+  // Calculate Streak
+  const streak = await calculateStreak();
+  $('sum-streak').textContent = `${streak} day${streak === 1 ? '' : 's'} 🔥`;
+
   // Points: base 10, +5 if score >= 80
   const pts = score >= 80 ? 15 : 10;
   $('points-badge').textContent = '+' + pts + ' pts';
@@ -276,6 +280,43 @@ async function handleSessionEnd(session) {
       $('score-fill').style.width = score + '%';
     });
   });
+}
+
+async function calculateStreak() {
+  const data = await chrome.storage.local.get(['usage', 'history']);
+  const usage = data.usage || {};
+  const history = data.history || [];
+  
+  // Combine dates from usage and history
+  const activeDates = new Set();
+  Object.keys(usage).forEach(dateStr => activeDates.add(new Date(dateStr).toDateString()));
+  history.forEach(session => {
+    if (session.startTime) {
+      activeDates.add(new Date(session.startTime).toDateString());
+    }
+  });
+
+  let streak = 0;
+  let curr = new Date();
+  
+  while (true) {
+    const dateStr = curr.toDateString();
+    if (activeDates.has(dateStr)) {
+      streak++;
+      curr.setDate(curr.getDate() - 1);
+    } else {
+      // If we are checking "today" and it's not there, maybe the session we just finished isn't saved yet
+      // But we just finished a session, so today should count as 1 at minimum
+      if (streak === 0 && dateStr === new Date().toDateString()) {
+        streak = 1;
+        curr.setDate(curr.getDate() - 1);
+        continue;
+      }
+      break;
+    }
+  }
+  
+  return streak || 1;
 }
 
 // ── Summary view ────────────────────────────────────────────────
