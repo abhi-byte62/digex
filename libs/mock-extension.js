@@ -6,6 +6,11 @@
 if (typeof chrome === 'undefined' || !chrome.runtime || !chrome.runtime.sendMessage) {
   console.log('FocusTab: Running in Preview Mode (Mock APIs active)');
 
+  const mockStorage = {
+    local: JSON.parse(localStorage.getItem('focustab_mock_storage_local') || '{}'),
+    session: {}
+  };
+
   window.chrome = {
     runtime: {
       sendMessage: (message, callback) => {
@@ -13,8 +18,17 @@ if (typeof chrome === 'undefined' || !chrome.runtime || !chrome.runtime.sendMess
         
         let response = { success: true };
         
-        if (message.type === 'GET_SESSION') {
-          response = null; // No session active by default in preview
+        if (message.type === 'START_FOCUS') {
+          // Store session in mock session storage
+          mockStorage.session.session = {
+            ...message.payload,
+            startTime: Date.now(),
+            attempts: {}
+          };
+        } else if (message.type === 'GET_SESSION') {
+          response = mockStorage.session.session || null;
+        } else if (message.type === 'END_FOCUS') {
+          mockStorage.session.session = null;
         }
         
         if (callback) {
@@ -29,22 +43,39 @@ if (typeof chrome === 'undefined' || !chrome.runtime || !chrome.runtime.sendMess
     storage: {
       local: {
         get: (keys, callback) => {
-          const data = JSON.parse(localStorage.getItem('focustab_mock_storage') || '{}');
           let result = {};
           if (Array.isArray(keys)) {
-            keys.forEach(k => result[k] = data[k]);
+            keys.forEach(k => result[k] = mockStorage.local[k]);
           } else if (typeof keys === 'string') {
-            result[keys] = data[keys];
+            result[keys] = mockStorage.local[keys];
           } else {
-            result = data;
+            result = mockStorage.local;
           }
           if (callback) callback(result);
           return Promise.resolve(result);
         },
         set: (items, callback) => {
-          const data = JSON.parse(localStorage.getItem('focustab_mock_storage') || '{}');
-          Object.assign(data, items);
-          localStorage.setItem('focustab_mock_storage', JSON.stringify(data));
+          Object.assign(mockStorage.local, items);
+          localStorage.setItem('focustab_mock_storage_local', JSON.stringify(mockStorage.local));
+          if (callback) callback();
+          return Promise.resolve();
+        }
+      },
+      session: {
+        get: (keys, callback) => {
+          let result = {};
+          if (Array.isArray(keys)) {
+            keys.forEach(k => result[k] = mockStorage.session[k]);
+          } else if (typeof keys === 'string') {
+            result[keys] = mockStorage.session[keys];
+          } else {
+            result = mockStorage.session;
+          }
+          if (callback) callback(result);
+          return Promise.resolve(result);
+        },
+        set: (items, callback) => {
+          Object.assign(mockStorage.session, items);
           if (callback) callback();
           return Promise.resolve();
         }
