@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FocusTab | Extension Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050505;
+      --purple: #bf00ff;
+      --green: #00f7ff;
+      --text: #ffffff;
+      --text-dim: #c0c0c0;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: -1px;
+    }
+    .accent { color: var(--purple); }
+    p {
+      color: var(--text-dim);
+      margin-bottom: 2rem;
+      max-width: 400px;
+    }
+    .links {
+      display: flex;
+      gap: 20px;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(191, 0, 255, 0.2);
+      padding: 30px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: white;
+      transition: all 0.3s ease;
+      width: 180px;
+    }
+    .card:hover {
+      background: rgba(191, 0, 255, 0.08);
+      border-color: var(--purple);
+      transform: translateY(-5px);
+    }
+    .card h2 {
+      margin: 0 0 10px 0;
+      font-size: 1.2rem;
+    }
+    .card span {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+    }
+    .p-badge {
+      background: var(--purple);
+      color: black;
+      font-weight: bold;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+    .d-badge {
+      background: var(--green);
+      color: black;
+      font-weight: bold;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <h1>FocusTab<span class="accent">.</span></h1>
+  <p>Preview the extension interfaces. Note: Extension APIs are disabled in web preview mode.</p>
+  
+  <div class="links">
+    <a href="popup/popup.html" class="card">
+      <div class="p-badge">Interface</div>
+      <h2>Popup View</h2>
+      <span>Main session controls and timer.</span>
+    </a>
+    <a href="dashboard/dashboard.html" class="card">
+      <div class="d-badge">Analytics</div>
+      <h2>Dashboard</h2>
+      <span>Usage charts and history.</span>
+    </a>
+  </div>
+</body>
+</html>
