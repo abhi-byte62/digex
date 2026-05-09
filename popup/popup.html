@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FocusTab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+
+  <!-- ── IDLE VIEW ─────────────────────────────────────── -->
+  <div id="view-idle">
+    <div class="header">
+      <span class="logo">FocusTab</span>
+      <button id="open-dash" class="dash-btn" aria-label="Open dashboard">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+      </button>
+      <span class="version">v1.0</span>
+    </div>
+
+    <div class="body">
+      <div class="field">
+        <label>goal <span class="opt">(optional)</span></label>
+        <input type="text" id="goal-input" placeholder="e.g. Solve 2 LeetCode mediums" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <label>duration</label>
+        <div class="slider-row">
+          <input type="range" id="dur-range" min="5" max="120" step="5" value="25">
+          <span class="slider-val" id="dur-val">25 min</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>mode</label>
+        <div class="mode-row">
+          <button class="mbtn active" data-mode="deep">Deep work</button>
+          <button class="mbtn" data-mode="soft">Soft focus</button>
+          <button class="mbtn" data-mode="pomodoro">Pomodoro</button>
+        </div>
+        <div class="mode-desc" id="mode-desc">
+          Hard block — distraction sites redirect instantly. No override possible.
+        </div>
+      </div>
+
+      <div class="field">
+        <label>block these sites</label>
+        <div class="site-list" id="site-list"></div>
+        <div class="add-row">
+          <input type="text" id="site-input" placeholder="reddit.com" autocomplete="off">
+          <button id="add-btn" class="icon-btn" aria-label="Add site">+</button>
+        </div>
+      </div>
+
+      <button class="primary-btn" id="start-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Start focus session
+      </button>
+    </div>
+  </div>
+
+  <!-- ── ACTIVE VIEW ───────────────────────────────────── -->
+  <div id="view-active" style="display:none;">
+    <div class="header active-header">
+      <span class="pulse-dot" aria-hidden="true"></span>
+      <span class="logo" id="active-mode-label">Focusing · Deep work</span>
+      <span class="live-badge">live</span>
+    </div>
+
+    <div class="body">
+      <div class="goal-box" id="active-goal"></div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-val mono" id="stat-time">25:00</div>
+          <div class="stat-lbl">remaining</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val mono danger" id="stat-blocks">0</div>
+          <div class="stat-lbl">blocked</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val mono success" id="stat-phase">work</div>
+          <div class="stat-lbl">phase</div>
+        </div>
+      </div>
+
+      <div id="pomo-section" style="display:none;">
+        <div class="field-label">pomodoro cycles</div>
+        <div class="pomo-pips" id="pomo-pips">
+          <div class="pip active"></div>
+          <div class="pip"></div>
+          <div class="pip"></div>
+          <div class="pip"></div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div>
+        <div class="field-label">blocked sites</div>
+        <div class="site-list" id="active-site-list"></div>
+      </div>
+
+      <button class="danger-btn" id="end-btn">End session early</button>
+    </div>
+  </div>
+
+  <!-- ── SUMMARY VIEW ──────────────────────────────────── -->
+  <div id="view-summary" style="display:none;">
+    <div class="header">
+      <span class="logo">Session complete</span>
+      <span class="points-badge" id="points-badge">+10 pts</span>
+    </div>
+
+    <div class="body">
+      <div class="summary-grid">
+        <div class="sum-card">
+          <div class="sum-val mono purple" id="sum-duration">25m</div>
+          <div class="sum-lbl">duration</div>
+        </div>
+        <div class="sum-card">
+          <div class="sum-val mono danger" id="sum-blocks">0</div>
+          <div class="sum-lbl">blocks hit</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="score-header">
+          <div class="field-label">focus score</div>
+          <span class="mono success" id="sum-score" style="font-size:13px;">100%</span>
+        </div>
+        <div class="score-track">
+          <div class="score-fill" id="score-fill"></div>
+        </div>
+      </div>
+
+      <div class="streak-row">
+        <span class="streak-label">current streak</span>
+        <span class="streak-val mono">5 days 🔥</span>
+      </div>
+
+      <div class="goal-check">
+        <span class="field-label" style="margin:0;">did you meet your goal?</span>
+        <div class="check-btns">
+          <button class="cbtn active" id="btn-yes">Yes</button>
+          <button class="cbtn" id="btn-no">No</button>
+        </div>
+      </div>
+
+      <button class="primary-btn" id="new-btn">
+        Start new session
+      </button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

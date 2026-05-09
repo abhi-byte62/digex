@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FocusTab Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <span class="logo">FocusTab Dashboard</span>
+      <span class="version">v1.0</span>
+    </div>
+
+    <div class="stats-overview">
+      <div class="overview-card">
+        <div class="overview-val mono" id="total-time-today">0m</div>
+        <div class="overview-lbl">Total Time Today</div>
+      </div>
+      <div class="overview-card">
+        <div class="overview-val mono" id="top-site-today">-</div>
+        <div class="overview-lbl">Top Site</div>
+      </div>
+      <div class="overview-card">
+        <div class="overview-val mono" id="sessions-completed">0</div>
+        <div class="overview-lbl">Sessions Completed</div>
+      </div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="chart-container">
+        <h2 class="chart-title">Today's Distribution</h2>
+        <canvas id="todayChart"></canvas>
+      </div>
+      <div class="chart-container">
+        <h2 class="chart-title">Last 7 Days (Minutes)</h2>
+        <canvas id="weekChart"></canvas>
+      </div>
+    </div>
+
+    <div class="site-breakdown">
+      <h2 class="chart-title">Detailed Breakdown (Today)</h2>
+      <div id="site-table" class="site-table">
+        <!-- Site rows will be injected here -->
+      </div>
+    </div>
+  </div>
+
+  <script src="../libs/chart.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>

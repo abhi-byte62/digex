@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "FocusTab",
+  "version": "1.0",
+  "description": "Digital wellbeing for your browser — track tabs, set limits, run focus sessions.",
+  "permissions": [
+    "tabs",
+    "storage",
+    "alarms",
+    "notifications",
+    "declarativeNetRequest"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html"
+  },
+  "declarative_net_request": {
+    "rule_resources": []
+  }
+}
